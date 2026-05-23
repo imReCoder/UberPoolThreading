@@ -12,9 +12,11 @@ public class RideLifeCycleService {
     private final RideStore rideStore;
     private final ExecutorService executor;
     private final LocationService locationService = new LocationService();
+    private final DriverService driverService;
 
-    public RideLifeCycleService(RideStore rideStore) {
+    public RideLifeCycleService(RideStore rideStore, DriverService driverService) {
         this.rideStore = rideStore;
+        this.driverService = driverService;
         this.executor = Executors.newFixedThreadPool(10);
     }
 
@@ -57,6 +59,8 @@ public class RideLifeCycleService {
 
         rideStore.moveToCompleted(ride);
 
-        System.out.println("Ride completed: " + ride.getRideId());
+        driverService.releaseDriver(ride.getDriverId());
+
+        System.out.println("Ride completed: " + ride.getRideId() + " and driver released.");
     }
 }

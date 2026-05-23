@@ -23,7 +23,7 @@
             DriverService driverService = new DriverService(ds);
             driverService.generateDrivers(10);
 
-            RideLifeCycleService rideLifeCycleService = new RideLifeCycleService(rs);
+            RideLifeCycleService rideLifeCycleService = new RideLifeCycleService(rs, driverService);
 
 
             RideRequestQueue rrq = new RideRequestQueue();
