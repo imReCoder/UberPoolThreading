@@ -40,7 +40,7 @@ public class MatchingService {
         );
 
         Driver nearestDriver =
-                driverService.findNearestAvailableDriver(
+                driverService.findAndAssignNearestDriver(
                         rideRequest
                                 .getSource()
                 );
@@ -58,9 +58,6 @@ public class MatchingService {
 
             return null;
         }
-
-        // Assign Driver
-        nearestDriver.setAvailable(false);
 
         logger.print(
                 "Driver Assigned : "

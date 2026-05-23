@@ -2,14 +2,19 @@ package Store;
 
 import Models.Ride;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class RideStore {
 
-    private final Map<UUID, Ride> activeRides = new HashMap<>();
-    private final Map<UUID, Ride> completedRides = new HashMap<>();
+    /**
+     * BASIC THREAD SAFETY: We use Collections.synchronizedMap.
+     * ALTERNATIVE WAY (Optimization): Use ConcurrentHashMap for higher concurrency throughput.
+     */
+    private final Map<UUID, Ride> activeRides = Collections.synchronizedMap(new HashMap<>());
+    private final Map<UUID, Ride> completedRides = Collections.synchronizedMap(new HashMap<>());
 
     public void addRide(Ride ride) {
         activeRides.put(ride.getRideId(), ride);

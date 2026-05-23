@@ -15,20 +15,22 @@ public class Location {
     // ----------------------------
     // Getters & Setters
     // ----------------------------
+    // BASIC THREAD SAFETY: We synchronize access methods to prevent stale reads.
+    // ALTERNATIVE WAY (Optimization): Make Location objects immutable and update references via AtomicReference.
 
-    public double getLatitude() {
+    public synchronized double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public synchronized void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public synchronized double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public synchronized void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -40,7 +42,7 @@ public class Location {
      * Simple Euclidean distance.
      * Good enough for simulation.
      */
-    public double distanceTo(Location other) {
+    public synchronized double distanceTo(Location other) {
 
         double dx = this.latitude - other.latitude;
         double dy = this.longitude - other.longitude;
@@ -55,7 +57,7 @@ public class Location {
     /**
      * Simulates driver movement.
      */
-    public void moveRandomly(double maxStep) {
+    public synchronized void moveRandomly(double maxStep) {
 
         double latOffset =
                 ThreadLocalRandom.current()
