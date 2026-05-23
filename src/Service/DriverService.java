@@ -149,21 +149,25 @@ public class DriverService {
     // ----------------------------
 
     /**
-     * BASIC THREAD SAFETY: We synchronize this entire method on the DriverService instance.
-     * This prevents the "Check-Then-Act" race condition where two consumer threads
-     * might find the same nearest driver simultaneously and double-assign them.
-     * 
-     * ALTERNATIVE WAY (Optimization): Use an AtomicBoolean in the Driver class for the 'available' flag,
-     * and use a compareAndSet(true, false) inside a retry loop. This would be a lock-free optimistic approach.
+     * OPTIMIZED THREAD SAFETY: Lock-Free Optimistic Assignment.
+     * We repeatedly find the nearest available driver and try to assign them using
+     * a lock-free atomic compareAndSet operation. If another thread assigns them first,
+     * the compareAndSet fails and we retry instantly.
      */
-    public synchronized Driver findAndAssignNearestDriver(Location pickupLocation) {
-        Driver nearestDriver = findNearestAvailableDriver(pickupLocation);
+    public Driver findAndAssignNearestDriver(Location pickupLocation) {
+        while (true) {
+            Driver nearestDriver = findNearestAvailableDriver(pickupLocation);
 
-        if (nearestDriver != null) {
-            nearestDriver.setAvailable(false);
+            if (nearestDriver == null) {
+                return null; // No available drivers left
+            }
+
+            // Attempt atomic assignment
+            if (nearestDriver.tryAssign()) {
+                return nearestDriver;
+            }
+            // If tryAssign returns false, another thread took the driver! Loop and try again.
         }
-
-        return nearestDriver;
     }
 
     public void generateDrivers(int n){

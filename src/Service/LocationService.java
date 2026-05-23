@@ -12,10 +12,9 @@ public class LocationService {
         }
 
         // fake movement logic
-        current.setLatitude(current.getLatitude() + 0.001);
-        current.setLongitude(current.getLongitude() + 0.001);
+        Location next = new Location(current.getLatitude() + 0.001, current.getLongitude() + 0.001);
 
-        ride.setCurrentLocation(current);
+        ride.setCurrentLocation(next);
     }
 }
 

@@ -3,6 +3,7 @@ package Models;
 import Util.IdGenerator;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Driver {
 
@@ -10,9 +11,20 @@ public class Driver {
 
     private String name;
 
-    private Location location;
+    /**
+     * OPTIMIZED THREAD SAFETY: We use 'volatile' here because Location is now immutable.
+     * When the LocationUpdater thread assigns a new Location object to this reference,
+     * the 'volatile' keyword ensures all RideConsumer threads instantly see the updated 
+     * memory reference without needing synchronized blocks.
+     */
+    private volatile Location location;
 
-    private boolean available;
+    /**
+     * OPTIMIZED THREAD SAFETY: We use AtomicBoolean instead of a regular boolean.
+     * This allows us to perform lock-free "Check-Then-Act" operations (like tryAssign)
+     * using CPU-level atomic instructions, completely avoiding slow synchronized blocks.
+     */
+    private final AtomicBoolean available;
 
     public Driver(
             String name,
@@ -21,23 +33,28 @@ public class Driver {
         this.id = IdGenerator.generateId();
         this.name = name;
         this.location = location;
-        this.available = true;
+        this.available = new AtomicBoolean(true);
     }
 
     // ----------------------------
     // Business Methods
     // ----------------------------
 
-    public void assignDriver() {
-        this.available = false;
+    /**
+     * Attempts to atomically assign this driver. 
+     * compareAndSet checks if the value is 'true', and if so, changes it to 'false'
+     * in a single, atomic CPU operation. Returns true if successful.
+     */
+    public boolean tryAssign() {
+        return this.available.compareAndSet(true, false);
     }
 
     public void releaseDriver() {
-        this.available = true;
+        this.available.set(true);
     }
 
     public void moveRandomly(double maxStep) {
-        this.location.moveRandomly(maxStep);
+        this.location = this.location.moveRandomly(maxStep);
     }
 
     // ----------------------------
@@ -61,7 +78,7 @@ public class Driver {
     }
 
     public boolean isAvailable() {
-        return available;
+        return available.get();
     }
 
     public void setLocation(Location location) {
@@ -69,7 +86,7 @@ public class Driver {
     }
 
     public void setAvailable(boolean available) {
-        this.available = available;
+        this.available.set(available);
     }
 
     // ----------------------------

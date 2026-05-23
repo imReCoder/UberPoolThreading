@@ -4,8 +4,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Location {
 
-    private double latitude;
-    private double longitude;
+    private final double latitude;
+    private final double longitude;
 
     public Location(double latitude, double longitude) {
         this.latitude = latitude;
@@ -15,23 +15,16 @@ public class Location {
     // ----------------------------
     // Getters & Setters
     // ----------------------------
-    // BASIC THREAD SAFETY: We synchronize access methods to prevent stale reads.
-    // ALTERNATIVE WAY (Optimization): Make Location objects immutable and update references via AtomicReference.
+    // BASIC THREAD SAFETY: We used synchronized access methods previously.
+    // OPTIMIZED THREAD SAFETY: Make Location objects completely immutable.
+    // This allows entirely lock-free reading.
 
-    public synchronized double getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public synchronized void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public synchronized double getLongitude() {
+    public double getLongitude() {
         return longitude;
-    }
-
-    public synchronized void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     // ----------------------------
@@ -42,7 +35,7 @@ public class Location {
      * Simple Euclidean distance.
      * Good enough for simulation.
      */
-    public synchronized double distanceTo(Location other) {
+    public double distanceTo(Location other) {
 
         double dx = this.latitude - other.latitude;
         double dy = this.longitude - other.longitude;
@@ -57,7 +50,7 @@ public class Location {
     /**
      * Simulates driver movement.
      */
-    public synchronized void moveRandomly(double maxStep) {
+    public Location moveRandomly(double maxStep) {
 
         double latOffset =
                 ThreadLocalRandom.current()
@@ -67,8 +60,7 @@ public class Location {
                 ThreadLocalRandom.current()
                         .nextDouble(-maxStep, maxStep);
 
-        this.latitude += latOffset;
-        this.longitude += lonOffset;
+        return new Location(this.latitude + latOffset, this.longitude + lonOffset);
     }
 
     // ----------------------------

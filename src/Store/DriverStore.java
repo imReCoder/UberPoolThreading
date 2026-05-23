@@ -3,7 +3,6 @@ package Store;
 import Models.Driver;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -12,13 +11,14 @@ public class DriverStore {
 
     /**
      * In-memory driver storage.
-     * BASIC THREAD SAFETY: We use Collections.synchronizedMap.
-     * ALTERNATIVE WAY (Optimization): Use ConcurrentHashMap for higher concurrency throughput.
+     * OPTIMIZED THREAD SAFETY: Reverted to standard HashMap because this map
+     * is fully populated on the main thread before any background threads start.
+     * It is 100% read-only during execution, meaning it is inherently thread-safe.
      */
     private final Map<UUID, Driver> drivers;
 
     public DriverStore() {
-        this.drivers = Collections.synchronizedMap(new HashMap<>());
+        this.drivers = new HashMap<>();
     }
 
     // ----------------------------

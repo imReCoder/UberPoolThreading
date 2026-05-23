@@ -9,7 +9,7 @@ public class Ride {
 
     private final Location sourceLocation;
     private final Location destinationLocation;
-    private Location currentLocation;
+    private volatile Location currentLocation;
     private UUID rideId;
 
     private UUID driverId;
