@@ -32,14 +32,17 @@
             MatchingService matchingService = new MatchingService(driverService,rideService,rs);
 
 
-            Thread rideProducerThread = new Thread(new RideProducer(rideService),"Thread - " + RideProducer.class.getSimpleName());
-            Thread rideConsumerThread = new Thread(new RideConsumer(rrq,matchingService,rideLifeCycleService),"Thread - "+RideConsumer.class.getSimpleName());
+            for (int i = 1; i <= 3; i++) {
+                Thread rideProducerThread = new Thread(new RideProducer(rideService), "Thread - " + RideProducer.class.getSimpleName() + "-" + i);
+                rideProducerThread.start();
+            }
 
+            for (int i = 1; i <= 4; i++) {
+                Thread rideConsumerThread = new Thread(new RideConsumer(rrq, matchingService, rideLifeCycleService), "Thread - " + RideConsumer.class.getSimpleName() + "-" + i);
+                rideConsumerThread.start();
+            }
 
             Thread driverLocationUpdaterThread = new Thread(new DriverLocationUpdater(driverService), "Thread - " + DriverLocationUpdater.class.getSimpleName());
-
-            rideProducerThread.start();
-            rideConsumerThread.start();
             driverLocationUpdaterThread.start();
         }
     }
