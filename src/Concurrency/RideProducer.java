@@ -18,13 +18,13 @@ public class RideProducer implements Runnable{
 
     private final RideRequestQueue rrq;
     public RideProducer(RideRequestQueue rrq){
-        this.name = Thread.currentThread().getName();
         this.rrq = rrq;
         this.delayInSecondsMax = 7;
         this.delayInSecondsMin = 3;
     }
     @Override
     public void run() {
+        this.name = Thread.currentThread().getName();
         logger.print("Ride Producer Thread Started : " + name);
         this.startGeneratingRide();
     }

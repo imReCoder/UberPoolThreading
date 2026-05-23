@@ -33,7 +33,7 @@ public class MatchingService {
 
         logger.print(
                 "Trying to match driver for request : "
-                        + rideRequest.getRequestId()
+                        + rideRequest.getRequestNameId()
         );
 
         Driver nearestDriver =
@@ -46,7 +46,7 @@ public class MatchingService {
 
             logger.print(
                     "No available driver found for request : "
-                            + rideRequest.getRequestId()
+                            + rideRequest.getRequestNameId()
             );
 
             rideRequest.setStatus(

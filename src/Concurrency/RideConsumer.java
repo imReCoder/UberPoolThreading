@@ -1,5 +1,6 @@
 package Concurrency;
 
+import Models.Ride;
 import Models.RideRequest;
 import Service.MatchingService;
 import Store.RideRequestQueue;
@@ -12,6 +13,7 @@ public class RideConsumer implements Runnable {
     private final RideRequestQueue rrq;
 
     private final Logger logger = new Logger(RideConsumer.class);
+    private String name;
 
     public RideConsumer(RideRequestQueue rrq, MatchingService matchingService){
         this.rrq = rrq;
@@ -20,15 +22,18 @@ public class RideConsumer implements Runnable {
 
     @Override
     public void run() {
+        this.name = Thread.currentThread().getName();
+        logger.print("Ride Consumer Thread Started: "+ name);
         this.startRideConsumer();
     }
 
     private void startRideConsumer(){
         while(consume){
             try {
-                logger.print("Trying to consume a Ride Request");
+                logger.print("Waiting to consume a Ride Request");
                 RideRequest rr = rrq.getRequest();
-                matchingService.matchDriver(rr);
+                logger.print("Ride Request received "+ rr.getRequestNameId());
+                Ride ride = matchingService.matchDriver(rr);
                 logger.print("Consumed a Ride Request: "+rr.getRequestNameId());
             } catch (InterruptedException e) {
                 logger.print("Interruption in Consuming Ride");
