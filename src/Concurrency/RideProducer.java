@@ -3,6 +3,7 @@ package Concurrency;
 import Models.Location;
 import Models.RideRequest;
 import Models.Rider;
+import Service.RideService;
 import Store.RideRequestQueue;
 import Util.IdGenerator;
 import Util.Logger;
@@ -10,21 +11,20 @@ import Util.Logger;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RideProducer implements Runnable{
-    private String name;
-    private boolean generate = true;
-    private int delayInSecondsMax;
-    private int delayInSecondsMin;
+    private final boolean generate = true;
+    private final int delayInMilliSecondsMax;
+    private final int delayInMilliSecondsMin;
     private final Logger logger  = new Logger(RideProducer.class);
 
-    private final RideRequestQueue rrq;
-    public RideProducer(RideRequestQueue rrq){
-        this.rrq = rrq;
-        this.delayInSecondsMax = 7;
-        this.delayInSecondsMin = 3;
+    private final RideService rideService;
+    public RideProducer(RideService rideService){
+        this.rideService = rideService;
+        this.delayInMilliSecondsMax = 150;
+        this.delayInMilliSecondsMin = 100;
     }
     @Override
     public void run() {
-        this.name = Thread.currentThread().getName();
+        String name = Thread.currentThread().getName();
         logger.print("Ride Producer Thread Started : " + name);
         this.startGeneratingRide();
     }
@@ -32,10 +32,9 @@ public class RideProducer implements Runnable{
     private void startGeneratingRide(){
         while (generate){
             Rider r = createRider();
-            RideRequest rr = this.createRideRequest(r);
-            this.rrq.addRideRequest(rr);
+            rideService.requestRide(r.getPickupLocation(),r.getDestinationLocation(),r.getId());
             try {
-                int sleepTIme = ThreadLocalRandom.current().nextInt(delayInSecondsMin*1000,delayInSecondsMax*1000);
+                int sleepTIme = ThreadLocalRandom.current().nextInt(delayInMilliSecondsMin, delayInMilliSecondsMax);
                 Thread.sleep(sleepTIme);
             } catch (InterruptedException e) {
                 logger.print("Ride Generation Interrupted");
@@ -49,8 +48,4 @@ public class RideProducer implements Runnable{
         return new Rider(IdGenerator.generateId(),"XYZ",riderLocation,destinationLocation);
     }
 
-    private RideRequest createRideRequest(Rider r){
-        RideRequest rr = new RideRequest(r);
-        return rr;
-    }
 }

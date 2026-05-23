@@ -15,12 +15,15 @@ public class MatchingService {
 
     private final Logger logger =
             new Logger(MatchingService.class);
+    private final RideService rideService;
 
     public MatchingService(
             DriverService driverService,
+            RideService rideService,
             RideStore rideStore) {
 
         this.driverService = driverService;
+        this.rideService = rideService;
         this.rideStore = rideStore;
     }
 
@@ -33,20 +36,20 @@ public class MatchingService {
 
         logger.print(
                 "Trying to match driver for request : "
-                        + rideRequest.getRequestNameId()
+                        + rideRequest.getRequestId()
         );
 
         Driver nearestDriver =
                 driverService.findNearestAvailableDriver(
-                        rideRequest.getRider()
-                                .getPickupLocation()
+                        rideRequest
+                                .getSource()
                 );
 
         if (nearestDriver == null) {
 
             logger.print(
                     "No available driver found for request : "
-                            + rideRequest.getRequestNameId()
+                            + rideRequest.getRequestId()
             );
 
             rideRequest.setStatus(
@@ -65,7 +68,7 @@ public class MatchingService {
         );
 
         // Create Ride
-        Ride ride = createRide(
+        Ride ride = rideService.createRide(
                 rideRequest,
                 nearestDriver
         );
@@ -81,20 +84,4 @@ public class MatchingService {
         return ride;
     }
 
-    // ----------------------------
-    // Helper Methods
-    // ----------------------------
-
-    private Ride createRide(
-            RideRequest rideRequest,
-            Driver driver) {
-
-        return new Ride(
-                UUID.randomUUID(),
-                driver,
-                rideRequest.getRider(),
-                RideStatus.STARTED,
-                LocalDateTime.now()
-        );
-    }
 }

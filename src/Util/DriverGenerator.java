@@ -37,7 +37,7 @@ public class DriverGenerator {
     private static Driver generateDriver(int index){
         String name = randomDriverName();
         Location location = Location.randomChennaiLocation();
-        return new Driver(index,name,location);
+        return new Driver(name,location);
     }
 
     private static String randomDriverName() {

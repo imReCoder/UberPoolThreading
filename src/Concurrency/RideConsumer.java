@@ -3,11 +3,13 @@ package Concurrency;
 import Models.Ride;
 import Models.RideRequest;
 import Service.MatchingService;
+import Service.RideLifeCycleService;
 import Store.RideRequestQueue;
 import Util.Logger;
 
 public class RideConsumer implements Runnable {
     private final MatchingService matchingService;
+    private final RideLifeCycleService rideLifeCycleService;
     private boolean consume = true;
 
     private final RideRequestQueue rrq;
@@ -15,9 +17,10 @@ public class RideConsumer implements Runnable {
     private final Logger logger = new Logger(RideConsumer.class);
     private String name;
 
-    public RideConsumer(RideRequestQueue rrq, MatchingService matchingService){
+    public RideConsumer(RideRequestQueue rrq, MatchingService matchingService, RideLifeCycleService rideLifeCycleService){
         this.rrq = rrq;
         this.matchingService = matchingService;
+        this.rideLifeCycleService = rideLifeCycleService;
     }
 
     @Override
@@ -32,9 +35,10 @@ public class RideConsumer implements Runnable {
             try {
                 logger.print("Waiting to consume a Ride Request");
                 RideRequest rr = rrq.getRequest();
-                logger.print("Ride Request received "+ rr.getRequestNameId());
+                logger.print("Ride Request received "+ rr.getRequestId());
                 Ride ride = matchingService.matchDriver(rr);
-                logger.print("Consumed a Ride Request: "+rr.getRequestNameId());
+                rideLifeCycleService.startRide(ride);
+                logger.print("Consumed a Ride Request: "+rr.getRequestId());
             } catch (InterruptedException e) {
                 logger.print("Interruption in Consuming Ride");
             }

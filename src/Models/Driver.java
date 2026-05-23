@@ -1,8 +1,12 @@
 package Models;
 
+import Util.IdGenerator;
+
+import java.util.UUID;
+
 public class Driver {
 
-    private final int id;
+    private final UUID id;
 
     private String name;
 
@@ -11,11 +15,10 @@ public class Driver {
     private boolean available;
 
     public Driver(
-            int id,
             String name,
             Location location) {
 
-        this.id = id;
+        this.id = IdGenerator.generateId();
         this.name = name;
         this.location = location;
         this.available = true;
@@ -41,7 +44,7 @@ public class Driver {
     // Getters & Setters
     // ----------------------------
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 

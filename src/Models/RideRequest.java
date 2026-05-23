@@ -7,19 +7,23 @@ public class RideRequest {
 
     private final UUID requestId;
 
-    private final Rider rider;
 
     private final LocalDateTime requestTime;
+    private final Location source;
+    private final Location destination;
+    private final UUID riderId;
 
     private RideRequestStatus status;
 
-    public RideRequest(Rider rider) {
+    public RideRequest(Location source , Location destination , UUID riderId) {
 
         this.requestId = UUID.randomUUID();
 
-        this.rider = rider;
 
         this.requestTime = LocalDateTime.now();
+        this.source = source;
+        this.destination = destination;
+        this.riderId = riderId;
 
         this.status = RideRequestStatus.REQUESTED;
     }
@@ -32,12 +36,8 @@ public class RideRequest {
         return requestId;
     }
 
-    public String getRequestNameId(){
-        return rider.getName() + "-" + requestId;
-    }
-
-    public Rider getRider() {
-        return rider;
+    public UUID getRiderId(){
+        return riderId;
     }
 
     public LocalDateTime getRequestTime() {
@@ -51,6 +51,13 @@ public class RideRequest {
     public void setStatus(RideRequestStatus status) {
         this.status = status;
     }
+    public Location getSource(){
+        return source;
+    }
+
+    public Location getDestination() {
+        return destination;
+    }
 
     // ----------------------------
     // Object Methods
@@ -61,7 +68,7 @@ public class RideRequest {
 
         return "RideRequest{" +
                 "requestId='" + requestId + '\'' +
-                ", rider=" + rider +
+                ", rider=" + riderId +
                 ", requestTime=" + requestTime +
                 ", status=" + status +
                 '}';

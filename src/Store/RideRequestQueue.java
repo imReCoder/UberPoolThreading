@@ -16,16 +16,16 @@ public class RideRequestQueue {
 
     public void addRideRequest(RideRequest rr){
         try{
-        logger.print("Trying to add new ride request : "+ rr.getRequestNameId());
+        logger.print("Trying to add new ride request : "+ rr.getRequestId());
         queue.put(rr);
-        logger.print("Ride Request Added successfully : "+ rr.getRequestNameId());
+        logger.print("Ride Request Added successfully : "+ rr.getRequestId());
         } catch (InterruptedException e) {
             logger.print("Add Ride Request Interrupted");
         }
 
     }
 
-    public synchronized RideRequest getRequest() throws InterruptedException {
+    public  RideRequest getRequest() throws InterruptedException {
         return queue.take();
     }
 }

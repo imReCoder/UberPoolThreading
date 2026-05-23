@@ -1,15 +1,20 @@
 package Models;
 
+import Util.IdGenerator;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Ride {
 
+    private final Location sourceLocation;
+    private final Location destinationLocation;
+    private final Location currentLocation;
     private UUID rideId;
 
-    private Driver driver;
+    private UUID driverId;
 
-    private Rider rider;
+    private UUID riderId;
 
     private RideStatus rideStatus;
 
@@ -20,17 +25,19 @@ public class Ride {
     private double fare;
 
     public Ride(
-            UUID rideId,
-            Driver driver,
-            Rider rider,
-            RideStatus rideStatus,
-            LocalDateTime startTime) {
+            UUID driverId,
+            UUID riderId,
+            Location sourceLocation,
+            Location destinationLocation
+    ) {
 
-        this.rideId = rideId;
-        this.driver = driver;
-        this.rider = rider;
-        this.rideStatus = rideStatus;
-        this.startTime = startTime;
+        this.rideId = IdGenerator.generateId();
+        this.driverId = driverId;
+        this.riderId = riderId;
+        this.sourceLocation = sourceLocation;
+        this.destinationLocation = destinationLocation;
+        this.rideStatus = RideStatus.IN_PROGRESS;
+        this.startTime = LocalDateTime.now();
     }
 
     // ----------------------------
@@ -41,24 +48,25 @@ public class Ride {
         return rideId;
     }
 
-    public void setRideId(UUID rideId) {
-        this.rideId = rideId;
+    public Location getSourceLocation() {
+        return sourceLocation;
     }
 
-    public Driver getDriver() {
-        return driver;
+    public Location getDestinationLocation() {
+        return destinationLocation;
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
+    public UUID getDriverId() {
+        return driverId;
     }
 
-    public Rider getRider() {
-        return rider;
+
+    public UUID getRiderId() {
+        return riderId;
     }
 
-    public void setRider(Rider rider) {
-        this.rider = rider;
+    public void setStatus(RideStatus status){
+        this.rideStatus = status;
     }
 
     public RideStatus getRideStatus() {
@@ -97,6 +105,7 @@ public class Ride {
         this.fare = fare;
     }
 
+
     // ----------------------------
     // Helper Methods
     // ----------------------------
@@ -114,8 +123,8 @@ public class Ride {
 
         return "Ride{" +
                 "rideId='" + rideId + '\'' +
-                ", driver=" + driver.getName() +
-                ", rider=" + rider.getName() +
+                ", driver=" + driverId +
+                ", rider=" + riderId +
                 ", status=" + rideStatus +
                 ", fare=" + fare +
                 '}';
