@@ -7,6 +7,7 @@ import Util.DriverGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class DriverService {
 
@@ -24,7 +25,7 @@ public class DriverService {
         driverStore.addDriver(driver);
     }
 
-    public Driver getDriver(int driverId) {
+    public Driver getDriver(UUID driverId) {
         return driverStore.getDriver(driverId);
     }
 
@@ -59,7 +60,7 @@ public class DriverService {
     // ----------------------------
 
     public void updateDriverLocation(
-            int driverId,
+            UUID driverId,
             Location newLocation) {
 
         Driver driver =
@@ -73,7 +74,7 @@ public class DriverService {
     }
 
     public void moveDriverRandomly(
-            int driverId,
+            UUID driverId,
             double maxStep) {
 
         Driver driver =
@@ -90,7 +91,7 @@ public class DriverService {
     // Driver Assignment
     // ----------------------------
 
-    public void assignDriver(int driverId) {
+    public void assignDriver(UUID driverId) {
 
         Driver driver =
                 driverStore.getDriver(driverId);
@@ -102,7 +103,7 @@ public class DriverService {
         driver.setAvailable(false);
     }
 
-    public void releaseDriver(int driverId) {
+    public void releaseDriver(UUID driverId) {
 
         Driver driver =
                 driverStore.getDriver(driverId);

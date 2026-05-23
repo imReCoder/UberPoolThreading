@@ -5,13 +5,14 @@ import Models.Driver;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class DriverStore {
 
     /**
      * In-memory driver storage.
      */
-    private final Map<Integer, Driver> drivers;
+    private final Map<UUID, Driver> drivers;
 
     public DriverStore() {
         this.drivers = new HashMap<>();
@@ -26,15 +27,15 @@ public class DriverStore {
         System.out.println("Added New Driver : "+ driver.getNameId());
     }
 
-    public Driver getDriver(int driverId) {
+    public Driver getDriver(UUID driverId) {
         return drivers.get(driverId);
     }
 
-    public void removeDriver(int driverId) {
+    public void removeDriver(UUID driverId) {
         drivers.remove(driverId);
     }
 
-    public boolean containsDriver(int driverId) {
+    public boolean containsDriver(UUID driverId) {
         return drivers.containsKey(driverId);
     }
 
