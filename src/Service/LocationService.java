@@ -6,11 +6,14 @@ import Models.Ride;
 public class LocationService {
     public void updateLocation(Ride ride) {
 
-        Location current = ride.getSourceLocation();
+        Location current = ride.getCurrentLocation();
+        if (current == null) {
+            current = new Location(ride.getSourceLocation().getLatitude(), ride.getSourceLocation().getLongitude());
+        }
 
         // fake movement logic
-        current.setLat(current.getLat() + 0.001);
-        current.setLng(current.getLng() + 0.001);
+        current.setLatitude(current.getLatitude() + 0.001);
+        current.setLongitude(current.getLongitude() + 0.001);
 
         ride.setCurrentLocation(current);
     }

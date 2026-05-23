@@ -37,8 +37,12 @@ public class RideConsumer implements Runnable {
                 RideRequest rr = rrq.getRequest();
                 logger.print("Ride Request received "+ rr.getRequestId());
                 Ride ride = matchingService.matchDriver(rr);
-                rideLifeCycleService.startRide(ride);
-                logger.print("Consumed a Ride Request: "+rr.getRequestId());
+                if (ride != null) {
+                    rideLifeCycleService.startRide(ride);
+                    logger.print("Consumed a Ride Request: "+rr.getRequestId());
+                } else {
+                    logger.print("No driver matched for Request: "+rr.getRequestId());
+                }
             } catch (InterruptedException e) {
                 logger.print("Interruption in Consuming Ride");
             }

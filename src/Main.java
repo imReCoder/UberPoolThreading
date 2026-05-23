@@ -1,3 +1,4 @@
+    import Concurrency.DriverLocationUpdater;
     import Concurrency.RideConsumer;
     import Concurrency.RideProducer;
     import Models.Driver;
@@ -35,7 +36,10 @@
             Thread rideConsumerThread = new Thread(new RideConsumer(rrq,matchingService,rideLifeCycleService),"Thread - "+RideConsumer.class.getSimpleName());
 
 
+            Thread driverLocationUpdaterThread = new Thread(new DriverLocationUpdater(driverService), "Thread - " + DriverLocationUpdater.class.getSimpleName());
+
             rideProducerThread.start();
             rideConsumerThread.start();
+            driverLocationUpdaterThread.start();
         }
     }

@@ -9,7 +9,7 @@ public class Ride {
 
     private final Location sourceLocation;
     private final Location destinationLocation;
-    private final Location currentLocation;
+    private Location currentLocation;
     private UUID rideId;
 
     private UUID driverId;
@@ -54,6 +54,14 @@ public class Ride {
 
     public Location getDestinationLocation() {
         return destinationLocation;
+    }
+
+    public Location getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(Location currentLocation) {
+        this.currentLocation = currentLocation;
     }
 
     public UUID getDriverId() {

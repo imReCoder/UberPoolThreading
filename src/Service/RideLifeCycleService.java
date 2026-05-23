@@ -11,6 +11,7 @@ public class RideLifeCycleService {
 
     private final RideStore rideStore;
     private final ExecutorService executor;
+    private final LocationService locationService = new LocationService();
 
     public RideLifeCycleService(RideStore rideStore) {
         this.rideStore = rideStore;
@@ -35,11 +36,11 @@ public class RideLifeCycleService {
 
                 Thread.sleep(1000); // simulate travel
 
-                ride.getSourceLocation(); // pseudo logic
+                locationService.updateLocation(ride);
 
                 System.out.println(
                         "Ride " + ride.getRideId() +
-                                " moving... step " + i
+                                " moving... step " + i + " Location: " + ride.getCurrentLocation()
                 );
             }
 
